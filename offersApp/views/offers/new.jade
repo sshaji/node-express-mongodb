@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  div(class="panel panel-default")
+    div(class="panel-heading") #{title}
+    div(class="panel-body") 
+      form(name="offerForm", action="/offers/create", method="post")
+        label User
+        p
+          input(type="text", name="user_id")
+        label Offer Details
+        p
+          textarea(name="offerdetails", class="form-control")
+        hr
+        input(type="submit", value="Save changes", class="btn btn-success") 
+        a(href="/offers", class="btn btn-warning") Cancel

@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  div(class="panel panel-default")
+    div(class="panel-heading") #{title}
+    div(class="panel-body") 
+      a(href="offers/new", class="btn btn-primary") Add new Offer
+      br
+      br
+      table(class="table table-striped")
+        each offer, i in offerList
+          tr
+            td 
+              a(href="/offers/edit/#{offer._id}") #{offer.offerdetails} 
+            td #{offer.user_id}
