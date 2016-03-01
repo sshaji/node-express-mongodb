@@ -7,7 +7,9 @@ block content
       form(name="offerForm", action="/offers/create", method="post")
         label User
         p
-          input(type="text", name="user_id")
+          select(name="user", class="form-control")
+            each user, i in userList
+              option(value="#{user._id}") #{user.firstname} #{user.lastname}
         label Offer Details
         p
           textarea(name="offerdetails", class="form-control")

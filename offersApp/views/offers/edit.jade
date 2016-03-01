@@ -6,7 +6,7 @@ block content
     div(class="panel-body") 
       form(name="offerForm", action="/offers/update", method="post")
         label User
-        p #{offer.user_id}
+        p #{offer.user.firstname} #{offer.user.lastname}
         label Offer Details
         p
           textarea(name="offerdetails", class="form-control") #{offer.offerdetails}

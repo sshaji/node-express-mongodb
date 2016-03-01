@@ -3,136 +3,112 @@
 var express = require('express');
 var router = express.Router();
 
-var mongodb = require('mongodb');
+var mongoose = require('mongoose');
 
 /* GET Offer list. */
 router.get('/', function(req, res, next) {
-	var MongoClient = mongodb.MongoClient;
-	var url = "mongodb://localhost:27017/offers";
-	MongoClient.connect(url, function(err, db) {
-		if (err) {
-			console.log('Unable to connect to db');
+	var Offer = mongoose.model('Offer');
+	Offer
+	.find()
+	.populate('user')
+	.exec(function(err, offers) {
+  		if (err) {
+			res.send(err);
+		} else if (offers.length) {
+			res.render('offers/list', {
+				'title': 'Offers',
+				'offerList': offers
+			});
 		} else {
-			console.log('Connection established');
-			var collection = db.collection('offers');
-			collection.find({}).toArray(function(err, result) {
-				if (err) {
-					res.send(err);
-				} else if (result.length) {
-					res.render('offers/list', {
-						'title': 'Offers',
-					 	'offerList': result
-					});
-				} else {
-					res.end('No offers');
-				}
-				db.close();
-			})
+			res.render('offers/list', {
+				'title': 'No Offers',
+				'offerList': []
+			});
 		}
-	})
+	});
 });
 
 /* GET New Offer. */
 router.get('/new', function(req, res, next) {
-  res.render('offers/new', { 
-  	title: 'New Offer' 
-  });
+  	var User = mongoose.model('User');
+  	User.find(function(err, users) {
+  		if (err) {
+
+  		} else {
+  			res.render('offers/new', { 
+  				title: 'New Offer',
+  				'userList': users
+  			});
+  		}
+  	});
 });
 
 /* POST Create Offer. */
 router.post('/create', function(req, res, next) {
-	var MongoClient = mongodb.MongoClient;
-	var url = "mongodb://localhost:27017/offers";
-	MongoClient.connect(url, function(err, db) {
-		if (err) {
-			console.log('Unable to connect to db');
+	var Offer = mongoose.model('Offer');
+	var offer = new Offer(req.body);
+	offer.save(function(err) {
+  		if (err) {
+			res.send(err);
 		} else {
-			console.log('Connection established');
-			var collection = db.collection('offers');
-			var offer = req.body;
-			collection.insert([offer], function(err, result) {
-				if (err) {
-					res.send(err);
-				} else {
-					res.redirect("/offers");
-				}
-				db.close();
-			})
+			res.redirect("/offers");
 		}
-	})
+	});
 });
 
 /* GET Edit Offer. */
 router.get('/edit/:id', function(req, res, next) {
-  	var MongoClient = mongodb.MongoClient;
-	var url = "mongodb://localhost:27017/offers";
-	MongoClient.connect(url, function(err, db) {
-		if (err) {
-			console.log('Unable to connect to db');
+  	var Offer = mongoose.model('Offer');
+	Offer
+	.findById(req.params.id)
+	.populate('user')
+	.exec(function(err, offer) {
+  		if (err) {
+			res.send(err);
 		} else {
-			console.log('Connection established');
-			var collection = db.collection('offers');
-			var ObjectId = require('mongodb').ObjectID;
-			collection.findOne({_id: ObjectId.createFromHexString(req.params.id)}, function(err, result) {
-				if (err) {
-					res.send(err);
-				} else {
-					res.render('offers/edit', {
-						'title': 'Edit Offer',
-					 	'offer': result
-					});
-				}
-				db.close();
-			})
+			res.render('offers/edit', {
+				'title': 'Edit Offer',
+				'offer': offer
+			});
 		}
-	})
+	});
 });
 
 /* POST Update Offer. */
 router.post('/update', function(req, res, next) {
-	var MongoClient = mongodb.MongoClient;
-	var url = "mongodb://localhost:27017/offers";
-	MongoClient.connect(url, function(err, db) {
-		if (err) {
-			console.log('Unable to connect to db');
+	var Offer = mongoose.model('Offer');
+	Offer.findById(req.body.id, function(err, offer) {
+  		if (err) {
+			res.send(err);
 		} else {
-			console.log('Connection established');
-			var collection = db.collection('offers');
-			var ObjectId = require('mongodb').ObjectID;
-			var offer = req.body;
-			collection.update({_id: ObjectId.createFromHexString(offer.id)}, {$set: offer}, function(err, result) {
-				if (err) {
+			offer.offerdetails = req.body.offerdetails;
+			offer.save(function(err) {
+  				if (err) {
 					res.send(err);
 				} else {
 					res.redirect("/offers");
 				}
-				db.close();
-			})
+			});
 		}
-	})
+	});
 });
 
 /* GET Delete Offer. */
 router.get('/delete/:id', function(req, res, next) {
-	var MongoClient = mongodb.MongoClient;
-	var url = "mongodb://localhost:27017/offers";
-	MongoClient.connect(url, function(err, db) {
-		if (err) {
-			console.log('Unable to connect to db');
+	var Offer = mongoose.model('Offer');
+	Offer.findById(req.params.id, function(err, offer) {
+  		if (err) {
+			res.send(err);
 		} else {
-			console.log('Connection established');
-			var collection = db.collection('offers');
-			var ObjectId = require('mongodb').ObjectID;
-			collection.remove({_id: ObjectId.createFromHexString(req.params.id)}, function(err) {
-				if (err) {
+			offer.remove(function(err) {
+  				if (err) {
 					res.send(err);
 				} else {
 					res.redirect("/offers");
 				}
-				db.close();
-			})
+			});
 		}
-	})
+	});
 });
 
 module.exports = router;
