@@ -1,16 +1,17 @@
 'use strict';
 
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+	Schema = mongoose.Schema;
 
 // create a schema
-var OfferSchema = new mongoose.Schema({
+var OfferSchema = new Schema({
   user: { ref : 'User', type : String },
-  offerdetails: { type: String, required: true }
+  offerdetails: { type: String }
 }, { _id: true });
 
-// the schema is useless so far
-// we need to create a model using it
-var Offer = mongoose.model('Offer', OfferSchema);
+OfferSchema.path('offerdetails').validate(function (v) {
+	return v.length > 3;
+}, 'Please enter atleast 3 chars for Offer details');
 
 // make this available to our users in our Node applications
-module.exports = Offer;
+module.exports = mongoose.model('Offer', OfferSchema);;

@@ -7,13 +7,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Connect to MongoDB using mongoose
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/offers');
 
+// controllers
 var routes = require('./routes/index');
 var offers = require('./routes/offers');
 var users = require('./routes/users');
 
+// Models
 require('./models/offer');
 require('./models/user');
 
@@ -31,6 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Controllers
 app.use('/', routes);
 app.use('/offers', offers);
 app.use('/users', users);
@@ -65,6 +69,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;

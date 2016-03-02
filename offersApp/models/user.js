@@ -1,20 +1,17 @@
 'use strict';
 
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
 // create a schema
-var UserSchema = new mongoose.Schema({
-  _id: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+var UserSchema = new Schema({
+  _id: { type: String },
+  password: { type: String },
   enabled: { type: Boolean },
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
-  email: { type: String, required: true }
+  firstname: { type: String },
+  lastname: { type: String },
+  email: { type: String }
 });
 
-// the schema is useless so far
-// we need to create a model using it
-var User = mongoose.model('User', UserSchema);
-
 // make this available to our users in our Node applications
-module.exports = User;
+module.exports = mongoose.model('User', UserSchema);;
