@@ -7,18 +7,19 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-// Connect to MongoDB using mongoose
+// Database
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/offers');
 
-// controllers
-var routes = require('./routes/index');
-var offers = require('./routes/offers');
-var users = require('./routes/users');
+// Controllers
+var routes = require('./routes/index'),
+    offers = require('./routes/offers'),
+    users = require('./routes/users');
 
-// Models
-require('./models/offer');
-require('./models/user');
+// REST API Controllers
+var offers_rest = require('./routes/rest/offers');
+
+// Base path global var
+global.__base = __dirname + '/';
 
 var app = express();
 
@@ -34,10 +35,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Database
+mongoose.connect('mongodb://localhost:27017/offers');
+
 // Controllers
-app.use('/', routes);
-app.use('/offers', offers);
-app.use('/users', users);
+app
+  .use('/', routes)
+  .use('/offers', offers)
+  .use('/users', users);
+
+// REST API Controllers
+app
+  .use('/rest/offers', offers_rest);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -45,8 +54,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
-// error handlers
 
 // development error handler
 // will print stacktrace

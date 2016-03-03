@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+	Schema = mongoose.Schema;
 
 // create a schema
 var UserSchema = new Schema({
@@ -13,5 +13,4 @@ var UserSchema = new Schema({
   email: { type: String }
 });
 
-// make this available to our users in our Node applications
-module.exports = mongoose.model('User', UserSchema);;
+module.exports = mongoose.model('User', UserSchema);

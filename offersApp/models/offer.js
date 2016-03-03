@@ -13,5 +13,4 @@ OfferSchema.path('offerdetails').validate(function (v) {
 	return v.length > 3;
 }, 'Please enter atleast 3 chars for Offer details');
 
-// make this available to our users in our Node applications
-module.exports = mongoose.model('Offer', OfferSchema);;
+module.exports = mongoose.model('Offer', OfferSchema);

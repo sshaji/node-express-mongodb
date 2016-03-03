@@ -5,9 +5,9 @@ var express = require('express'),
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { 
-  	title: 'Offers App' 
-  });
+  	res.render('index', { 
+  		title: 'Offers App' 
+  	});
 });
 
 module.exports = router;
