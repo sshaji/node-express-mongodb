@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
 
 // create a schema
 var OfferSchema = new Schema({
-  user: { ref : 'User', type : String },
+  user: { ref : 'User', type : Schema.ObjectId },
   offerdetails: { type: String }
 }, { _id: true });
 

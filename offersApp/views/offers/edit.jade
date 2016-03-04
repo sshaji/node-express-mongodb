@@ -1,18 +1,21 @@
 extends layout
 
 block content
-  div(class="panel panel-default")
-    div(class="panel-heading") #{title}
-    div(class="panel-body") 
+  .panel.panel-default
+    .panel-heading #{title}
+    .panel-body
       form(name="offerForm", action="/offers/#{offer_id}", method="post")
         label User
         p #{offer.user.firstname} #{offer.user.lastname}
         label Offer Details
         p
-          textarea(name="offerdetails", class="form-control") #{offer.offerdetails}
+          .form-group
+            textarea.form-control(name="offerdetails") #{offer.offerdetails}
         hr
         input(type="hidden", name="id", value="#{offer._id}") 
-        input(type="submit", value="Save changes", class="btn btn-success") 
-        a(href="/offers", class="btn btn-warning") Cancel 
-        a(href="/offers/delete/#{offer._id}", class="btn btn-danger") Delete 
+        input.btn.btn-success(type="submit", value="Save changes") 
+        &nbsp;
+        a.btn.btn-warning(href="/offers") Cancel 
+        &nbsp;
+        a.btn.btn-danger(href="/offers/delete/#{offer._id}") Delete 
 

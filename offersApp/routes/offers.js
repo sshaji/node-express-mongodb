@@ -6,8 +6,15 @@ var express = require('express'),
 var User = require('../models/user'),
 	Offer = require('../models/offer');
 
+/* Login Check */
+function isAuthenticated(req, res, next) {
+    if (req.user)
+        return next();
+    res.redirect('/login');
+}
+
 /* GET Offer list. */
-router.get('/', function(req, res, next) {
+router.get('/', isAuthenticated, function(req, res, next) {
 	Offer
 	.find()
 	.populate('user')
@@ -17,6 +24,7 @@ router.get('/', function(req, res, next) {
 		} else if (offers.length) {
 			res.render('offers/list', {
 				'title': 'Offers',
+				user: req.user,
 				'offerList': offers
 			});
 		} else {
@@ -29,13 +37,14 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET New Offer. */
-router.get('/new', function(req, res, next) {
+router.get('/new', isAuthenticated, function(req, res, next) {
   	User.find(function(err, users) {
   		if (err) {
 
   		} else {
   			res.render('offers/new', { 
   				title: 'New Offer',
+  				user: req.user,
   				'userList': users
   			});
   		}
@@ -43,7 +52,7 @@ router.get('/new', function(req, res, next) {
 });
 
 /* POST Create Offer. */
-router.post('/create', function(req, res, next) {
+router.post('/create', isAuthenticated, function(req, res, next) {
 	var offer = new Offer(req.body);
 	offer.save(function(err) {
   		if (err) {
@@ -55,7 +64,7 @@ router.post('/create', function(req, res, next) {
 });
 
 /* GET Edit Offer. */
-router.get('/edit/:id', function(req, res, next) {
+router.get('/edit/:id', isAuthenticated, function(req, res, next) {
 	Offer
 	.findById(req.params.id)
 	.populate('user')
@@ -72,7 +81,7 @@ router.get('/edit/:id', function(req, res, next) {
 });
 
 /* POST Update Offer. */
-router.post('/:id', function(req, res, next) {
+router.post('/:id', isAuthenticated, function(req, res, next) {
 	Offer.findById(req.body.id, function(err, offer) {
   		if (err) {
 			res.send(err);
@@ -90,7 +99,7 @@ router.post('/:id', function(req, res, next) {
 });
 
 /* GET Delete Offer. */
-router.get('/delete/:id', function(req, res, next) {
+router.get('/delete/:id', isAuthenticated, function(req, res, next) {
 	Offer.findById(req.params.id, function(err, offer) {
   		if (err) {
 			res.send(err);
