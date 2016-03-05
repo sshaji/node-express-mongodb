@@ -10,7 +10,7 @@ block content
       table.table.table-striped
         each offer, i in offerList
           tr
-            td #{offer.offerdetails} #{user._id}
+            td #{offer.offerdetails}
             td #{offer.user.firstname} #{offer.user.lastname}
             td
               if (offer.user.username == user.username)

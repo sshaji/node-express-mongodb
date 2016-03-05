@@ -3,11 +3,13 @@
 var express = require('express'),
 	router = express.Router();
 
+var passport = require('passport');
+
 var User = require('../../models/user'),
 	Offer = require('../../models/offer');
 
 /* GET Offer list. */
-router.get('/', function(req, res, next) {
+router.get('/', passport.authenticate('basic', { session: false }), function(req, res, next) {
 	Offer
 	.find()
 	.populate('user')
@@ -23,7 +25,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST Create Offer. */
-router.post('/create', function(req, res, next) {
+router.post('/create', passport.authenticate('basic', { session: false }), function(req, res, next) {
 	var offer = new Offer(req.body);
 	offer.save(function(err, offer) {
   		if (err) {
@@ -35,7 +37,7 @@ router.post('/create', function(req, res, next) {
 });
 
 /* GET Offer. */
-router.get('/:id', function(req, res, next) {
+router.get('/:id', passport.authenticate('basic', { session: false }), function(req, res, next) {
 	Offer
 	.findById(req.params.id)
 	.populate('user')
@@ -49,7 +51,7 @@ router.get('/:id', function(req, res, next) {
 });
 
 /* PUT Update Offer. */
-router.put('/:id', function(req, res, next) {
+router.put('/:id', passport.authenticate('basic', { session: false }), function(req, res, next) {
 	Offer.findById(req.body.id, function(err, offer) {
   		if (err) {
 			res.send(err);
@@ -67,7 +69,7 @@ router.put('/:id', function(req, res, next) {
 });
 
 /* GET Delete Offer. */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', passport.authenticate('basic', { session: false }), function(req, res, next) {
 	Offer.findById(req.params.id, function(err, offer) {
   		if (err) {
 			res.send(err);

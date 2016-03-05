@@ -13,6 +13,7 @@ var mongoose = require('mongoose');
 // Passport
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
+    BasicStrategy = require('passport-http').BasicStrategy,
     flash = require('connect-flash');
 
 // Controllers
@@ -40,19 +41,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Passport
+// Initialize express session before passport
 app.use(require('express-session')({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false
 }));
+
+// Passport
 app.use(passport.initialize());
-app.use(flash());
 app.use(passport.session());
+app.use(flash());
 
 // Passport config
 var User = require('./models/user');
 passport.use(new LocalStrategy(User.authenticate()));
+passport.use(new BasicStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
