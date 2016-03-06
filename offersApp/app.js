@@ -61,7 +61,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // Database
-mongoose.connect('mongodb://localhost:27017/offers');
+var config = require('./config').config();
+console.log('Using db : ' + config.db.uri)
+mongoose.connect(config.db.uri, config.db.options);
 
 // Controllers
 app

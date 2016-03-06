@@ -3,8 +3,7 @@
 var express = require('express'),
 	router = express.Router();
 
-var User = require('../models/user'),
-	Offer = require('../models/offer');
+var Offer = require('../models/offer');
 
 /* Login Check */
 function isAuthenticated(req, res, next) {
@@ -16,9 +15,7 @@ function isAuthenticated(req, res, next) {
 /* GET Offer list. */
 router.get('/', isAuthenticated, function(req, res, next) {
 	Offer
-	.find()
-	.populate('user')
-	.exec(function(err, offers) {
+	.list({}, function(err, offers) {
   		if (err) {
 			res.send(err);
 		} else if (offers.length) {
@@ -38,16 +35,9 @@ router.get('/', isAuthenticated, function(req, res, next) {
 
 /* GET New Offer. */
 router.get('/new', isAuthenticated, function(req, res, next) {
-  	User.find(function(err, users) {
-  		if (err) {
-
-  		} else {
-  			res.render('offers/new', { 
-  				title: 'New Offer',
-  				user: req.user,
-  				'userList': users
-  			});
-  		}
+  	res.render('offers/new', { 
+  		title: 'New Offer',
+  		user: req.user
   	});
 });
 
@@ -66,9 +56,7 @@ router.post('/create', isAuthenticated, function(req, res, next) {
 /* GET Edit Offer. */
 router.get('/edit/:id', isAuthenticated, function(req, res, next) {
 	Offer
-	.findById(req.params.id)
-	.populate('user')
-	.exec(function(err, offer) {
+	.load(req.params.id, function(err, offer) {
   		if (err) {
 			res.send(err);
 		} else {
@@ -82,7 +70,8 @@ router.get('/edit/:id', isAuthenticated, function(req, res, next) {
 
 /* POST Update Offer. */
 router.post('/:id', isAuthenticated, function(req, res, next) {
-	Offer.findById(req.body.id, function(err, offer) {
+	Offer
+	.load(req.body.id, function(err, offer) {
   		if (err) {
 			res.send(err);
 		} else {
@@ -100,7 +89,8 @@ router.post('/:id', isAuthenticated, function(req, res, next) {
 
 /* GET Delete Offer. */
 router.get('/delete/:id', isAuthenticated, function(req, res, next) {
-	Offer.findById(req.params.id, function(err, offer) {
+	Offer
+	.load(req.params.id, function(err, offer) {
   		if (err) {
 			res.send(err);
 		} else {
